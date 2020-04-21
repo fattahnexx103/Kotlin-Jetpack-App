@@ -89,5 +89,4 @@ dependencies {
     implementation "androidx.preference:preference:$preferencesVersion"
 
 
-
 }
