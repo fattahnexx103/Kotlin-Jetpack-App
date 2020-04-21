@@ -30,17 +30,6 @@ class DetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //if arguements is not null
-        arguments?.let {bundle ->
-            itemId = DetailFragmentArgs.fromBundle(bundle).detailId //get bundle arguements from details fragment
-            detail_textView.text = "Detail Fragment with $itemId"
-        }
 
-        detail_floatingActionButton.setOnClickListener {
-
-            //action is the generated direction class
-            val actions = DetailFragmentDirections.actionDetailFragmentToListFragment()
-            Navigation.findNavController(it).navigate(actions) //you can also pass in view instead of it
-        }
     }
 }
