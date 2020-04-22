@@ -3,6 +3,7 @@ package com.nexx.nexxassistant.kotlinjetpackapp.view
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.nexx.nexxassistant.kotlinjetpackapp.R
 import com.nexx.nexxassistant.kotlinjetpackapp.model.Item
@@ -32,6 +33,12 @@ class ListAdapter (val itemList: ArrayList<Item>) : RecyclerView.Adapter<ListAda
             //set the values in the view such as the text and image
             holder.view.item_name.text = itemList[position].dogBreed
             holder.view.item_lifespan.text = itemList[position].lifeSpan
+
+            //navigate to detail fragment
+            holder.view.setOnClickListener {
+                val actions = ListFragmentDirections.actionListFragmentToDetailFragment()
+                Navigation.findNavController(it).navigate(actions)
+            }
 
         }
 

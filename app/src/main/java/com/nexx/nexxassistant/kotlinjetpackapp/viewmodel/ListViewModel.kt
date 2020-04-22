@@ -1,23 +1,54 @@
 package com.nexx.nexxassistant.kotlinjetpackapp.viewmodel
 
+import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.nexx.nexxassistant.kotlinjetpackapp.model.Item
+import com.nexx.nexxassistant.kotlinjetpackapp.network.RetrofitService
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.observers.DisposableSingleObserver
+import io.reactivex.schedulers.Schedulers
 
 class ListViewModel: ViewModel() {
 
     val itemsLiveData = MutableLiveData<List<Item>>()
     val loadErrorLiveData = MutableLiveData<Boolean>()
 
-     fun refresh(){
-        //create sample data here
-        val Item1 = Item("1","Corgi","15 years", "breedGroup","stable","imageUrl")
-        val Item2 = Item("2","Labrador","17 years", "breedGroup","friendly","imageUrl")
-        val Item3 = Item("3", "BloodHound", "9 years", "breedGroup","seeking","imageUrl")
-        val Item4 = Item("4","Shephard","25 years", "breedGroup","intelligent","imageUrl")
-        val dogsList: ArrayList<Item> = arrayListOf<Item>(Item1,Item2,Item3,Item4)
+    private val apiService =  RetrofitService()
+    private val disposable = CompositeDisposable() //rx java memory leak management
 
-        itemsLiveData.value = dogsList
-        loadErrorLiveData.value = false
+     fun refresh(){
+         fetchFromRemote()
+
+    }
+
+    private fun fetchFromRemote(){
+        loadErrorLiveData.value = true
+        disposable.add(
+            apiService.getItems()
+                .subscribeOn(Schedulers.newThread()) //do the process in background thread
+                .observeOn(AndroidSchedulers.mainThread()) //observe the results on the main thread
+                .subscribeWith(object: DisposableSingleObserver<List<Item>>(){
+                    override fun onSuccess(list: List<Item>) {
+                        itemsLiveData.value = list
+                        loadErrorLiveData.value = false
+                    }
+
+                    override fun onError(error: Throwable) {
+                        loadErrorLiveData.value = true
+                        Log.i("ERROR LOG : ", error.message )
+                        error.printStackTrace()
+                    } //what do you observe
+
+                })
+        )
+    }
+
+    //ViewModel method which handles cleanup
+    override fun onCleared() {
+        super.onCleared()
+        disposable.clear()
     }
 }
