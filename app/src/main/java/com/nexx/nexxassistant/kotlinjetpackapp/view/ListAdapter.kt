@@ -7,6 +7,8 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.nexx.nexxassistant.kotlinjetpackapp.R
 import com.nexx.nexxassistant.kotlinjetpackapp.model.Item
+import com.nexx.nexxassistant.kotlinjetpackapp.utils.getProgressDrawable
+import com.nexx.nexxassistant.kotlinjetpackapp.utils.loadImage
 import kotlinx.android.synthetic.main.item_card.view.*
 
 class ListAdapter (val itemList: ArrayList<Item>) : RecyclerView.Adapter<ListAdapter.ListViewHolder>(){
@@ -33,6 +35,9 @@ class ListAdapter (val itemList: ArrayList<Item>) : RecyclerView.Adapter<ListAda
             //set the values in the view such as the text and image
             holder.view.item_name.text = itemList[position].dogBreed
             holder.view.item_lifespan.text = itemList[position].lifeSpan
+
+            //load the image using the function we created for imageview in the util class
+            holder.view.item_imageView.loadImage(itemList[position].imageUrl, getProgressDrawable(holder.view.item_imageView.context))
 
             //navigate to detail fragment
             holder.view.setOnClickListener {
