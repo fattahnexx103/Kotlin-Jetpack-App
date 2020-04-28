@@ -39,9 +39,10 @@ class ListAdapter (val itemList: ArrayList<Item>) : RecyclerView.Adapter<ListAda
             //load the image using the function we created for imageview in the util class
             holder.view.item_imageView.loadImage(itemList[position].imageUrl, getProgressDrawable(holder.view.item_imageView.context))
 
-            //navigate to detail fragment
+            //navigate to detail fragment and pass in the uuid to the fragment
             holder.view.setOnClickListener {
-                val actions = ListFragmentDirections.actionListFragmentToDetailFragment()
+                val actions = ListFragmentDirections.actionListFragmentToDetailFragment() //create the action
+                actions.detailId = itemList[position].uuid //pass in the uuid in the actions for the detail screen
                 Navigation.findNavController(it).navigate(actions)
             }
 
